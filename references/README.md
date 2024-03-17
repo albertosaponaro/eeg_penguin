@@ -1,0 +1,1 @@
+Study: Symmetry perception and affective responses: A combined EEG/EMG study

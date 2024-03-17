@@ -1,0 +1,5 @@
+*/**/*.pyc
+data/*
+references/*
+!data/README.md
+!references/README.md
