@@ -1,4 +1,4 @@
-## BIDS
+## Extract BIDS
 
 Folder structure:
 
