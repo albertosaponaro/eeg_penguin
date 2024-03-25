@@ -23,7 +23,8 @@ def load_subject(given_path):
     
     return raw
 
-def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=100e-6):
+
+def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=100e-6, drop_bad=True, perform_ica=True):
     
     # EEG trace re-referenced to scalp average
     raw = raw.set_eeg_reference(ref_channels = "average")
@@ -46,15 +47,23 @@ def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=100e-6):
         tmax = tmax,
         baseline = baseline
     )
+
+    # Number of ICA componets based on raw data rank
+    rank = mne.compute_rank(raw)['eeg']
     
-    # Initialize and fit ICA
-    # DOC: https://mne.tools/stable/auto_tutorials/preprocessing/40_artifact_correction_ica.html
-    #ica = mne.preprocessing.ICA(method = "picard", n_components = 64)
-    #ica.fit(raw, verbose = True)
     
-    # Remove trials if amplitude exceeds ±μ100
-    epochs.drop_bad(reject={'eeg': reject_amp})
+    if perform_ica:
+        # Initialize and fit ICA
+        # DOC: https://mne.tools/stable/auto_tutorials/preprocessing/40_artifact_correction_ica.html
+        ica = mne.preprocessing.ICA(method = "picard", n_components = rank)
+        ica.fit(raw, verbose = True)
+        raw = ica.apply
+    
+    # Remove trials if amplitude exceeds a certain threshold
+    if drop_bad: 
+        epochs.drop_bad(reject={'eeg': reject_amp})
 
     return raw, epochs
-    
-    # TODO: add code for single subj pipeline
+
+
+
