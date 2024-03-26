@@ -16,12 +16,6 @@ def load_subject(given_path):
     #raw = mne.pick_types(raw.info, meg=False, eeg=True, exclude=['bads'])
     #interpolating bads throws error?
     
-    # OK Check: 1 channel and psd
-    #plt.plot(raw[0,:][0].T)
-    #plt.show()
-    #raw.compute_psd().plot()
-    #plt.show()
-    
     return raw
 
 
@@ -52,10 +46,9 @@ def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=None, perfo
     # Number of ICA componets based on raw data rank
     rank = mne.compute_rank(raw)['eeg']
     
-    
-    if perform_ica:
-        # Initialize and fit ICA
-        # DOC: https://mne.tools/stable/auto_tutorials/preprocessing/40_artifact_correction_ica.html
+    # Initialize and fit ICA
+    # DOC: https://mne.tools/stable/auto_tutorials/preprocessing/40_artifact_correction_ica.html
+    if perform_ica: 
         ica = mne.preprocessing.ICA(method = "picard", n_components = rank)
         ica.fit(raw, verbose = True)
         raw = ica.apply

@@ -83,3 +83,46 @@ def plot_spectra(spectra, mode='mean', title="TFR", save_path=None):
 
     # Show the plot
     plt.show()
+
+import matplotlib.pyplot as plt
+
+def plot_topomaps(evoked, times=[0.52, 2.0], title='Topomaps', save_path=None):
+    """
+    Plot topographic maps for regular and random events.
+
+    Parameters:
+    - evoked (dict): A dictionary containing evoked objects for regular and random events.
+    - times (list): Time points at which topomaps are plotted. Defaults to [0.52, 2.0].
+    - title (str): Title for the main figure. Defaults to 'Topomaps'.
+    - save_path (str): Path to save the plot as a PNG file. If None, the plot will not be saved. Defaults to None.
+    """
+    # Plot topomaps for regular and random events
+    fig_regular = evoked['regular'].plot_topomap(times=times, ch_type='eeg');
+    fig_random = evoked['random'].plot_topomap(times=times, ch_type='eeg');
+    
+    # Create a 2x1 plot
+    fig, axes = plt.subplots(2, 1, figsize=(4, 5))
+
+    # Set title for the main figure
+    fig.suptitle(title)
+
+    # Plot regular event topomap
+    axes[0].imshow(fig_regular.canvas.buffer_rgba(), aspect='auto', origin='upper')
+    axes[0].set_title(f"Regular Event")
+    axes[0].axis('off')
+
+    # Plot random event topomap
+    axes[1].imshow(fig_random.canvas.buffer_rgba(), aspect='auto', origin='upper')
+    axes[1].set_title(f"Random Event")
+    axes[1].axis('off')
+    
+    # Adjust layout
+    plt.tight_layout()
+
+    # Save the plot if save_path is provided
+    if save_path:
+        plt.savefig(save_path)
+        print(f"Plot saved as {save_path}")
+
+    # Show the plot
+    plt.show()
