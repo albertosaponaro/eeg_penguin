@@ -1,4 +1,5 @@
 import mne
+import numpy as np
 from matplotlib import pyplot as plt
 from mne_bids import read_raw_bids
 
@@ -24,7 +25,7 @@ def load_subject(given_path):
     return raw
 
 
-def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=100e-6, drop_bad=True, perform_ica=True):
+def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=None, perform_ica=True):
     
     # EEG trace re-referenced to scalp average
     raw = raw.set_eeg_reference(ref_channels = "average")
@@ -60,10 +61,28 @@ def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=100e-6, dro
         raw = ica.apply
     
     # Remove trials if amplitude exceeds a certain threshold
-    if drop_bad: 
+    if reject_amp: 
         epochs.drop_bad(reject={'eeg': reject_amp})
 
     return raw, epochs
+
+def perform_tfr(epochs):
+    # Define frequency range
+    freqs = np.logspace(np.log10(5), np.log10(20), num=20)
+
+    # Define number of cycles per frequency
+    n_cycles = freqs / 2.0  # Use a more standard number of cycles
+
+    # Perform time-frequency analysis using Morlet wavelets
+    power_regular = mne.time_frequency.tfr_multitaper(
+        epochs['regular'], freqs=freqs, n_cycles=n_cycles, use_fft=True,
+        return_itc=False, decim=3, n_jobs=-1)
+
+    power_random = mne.time_frequency.tfr_multitaper(
+        epochs['random'], freqs=freqs, n_cycles=n_cycles, use_fft=True,
+        return_itc=False, decim=3, n_jobs=-1)
+    
+    return {'regular': power_regular, 'random': power_random}
 
 
 
