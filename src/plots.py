@@ -84,7 +84,7 @@ def plot_spectra(spectra, mode='mean', title="TFR", save_path=None):
     # Show the plot
     plt.show()
 
-import matplotlib.pyplot as plt
+
 
 def plot_topomaps(evoked, times=[0.52, 2.0], title='Topomaps', save_path=None):
     """
