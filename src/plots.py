@@ -32,13 +32,13 @@ def plot_ERPs(epochs, title='Event-Related Potentials (ERPs)', save_path=None):
 
 
 
-def plot_spectra(spectra, mode='mean', title="TFR", save_path=None):
+def plot_spectra(spectra, mode='logratio',title="TFR", save_path=None):
     """
     Plot spectra from the given dictionary and save the plot as a PNG file.
 
     Parameters:
     - spectra (dict): A dictionary containing experiment type as keys and power spectra objects as values.
-    - mode (str): The mode of plotting. Defaults to 'mean'.
+    - mode (str): The mode of plotting. Defaults to 'logratio'.
     - save_path (str): The path to save the plot. If None, the plot will not be saved. Defaults to None.
     """
     figs = []
@@ -48,12 +48,12 @@ def plot_spectra(spectra, mode='mean', title="TFR", save_path=None):
         # Plot joint plot for PO3 and PO7
         figs.append(power.plot_joint(picks=["PO3", "PO7"], mode=mode,
                         title=f"{stimuli} + reft posterior: PO3 & PO7",
-                        baseline=(-0.2, 0.05), timefreqs=[(0.5, 10), (1.3, 8)]))
+                        baseline=(-0.5, 0), timefreqs=[(0.5, 10), (1.3, 8)]))
         
         # Plot joint plot for PO4 and PO8
         figs.append(power.plot_joint(picks=["PO4", "PO8"], mode=mode,
                         title=f"{stimuli} + right posterior: PO4 & PO8",
-                        baseline=(-0.2, 0.05), timefreqs=[(0.5, 10), (1.3, 8)]))
+                        baseline=(-0.5, 0), timefreqs=[(0.5, 10), (1.3, 8)]))
 
     # Create a 2x2 plot
     fig, axes = plt.subplots(2, 2, figsize=(10, 8))

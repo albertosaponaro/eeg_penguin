@@ -101,7 +101,7 @@ def perform_tfr(epochs):
 
     """
     # Define frequency range
-    freqs = np.logspace(np.log10(5), np.log10(20), num=20)
+    freqs = np.logspace(np.log10(5), np.log10(20), num=30)
 
     # Define number of cycles per frequency
     n_cycles = freqs / 2.0  # Use a more standard number of cycles
@@ -109,11 +109,11 @@ def perform_tfr(epochs):
     # Perform time-frequency analysis using Morlet wavelets
     power_regular = mne.time_frequency.tfr_multitaper(
         epochs['regular'], freqs=freqs, n_cycles=n_cycles, use_fft=True,
-        return_itc=False, decim=3, n_jobs=-1)
+        return_itc=False)
 
     power_random = mne.time_frequency.tfr_multitaper(
         epochs['random'], freqs=freqs, n_cycles=n_cycles, use_fft=True,
-        return_itc=False, decim=3, n_jobs=-1)
+        return_itc=False)
     
     return {'regular': power_regular, 'random': power_random}
 
