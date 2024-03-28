@@ -9,10 +9,11 @@ eeg_penguin
 │   └── README.md (info about data)
 │
 ├── notebooks 
-│   ├── 01-Penguin_Sub-001_ERP.ipynb
-│   ├── 02-Penguin_Sub-001_TFR.ipynb
-│   ├── 03-Penguin_All-Sub_ERP.ipynb
-│   └── 04-Penguin_All-Sub_ERP.ipynb
+│   ├── 01_Penguin_Sub-001_ERP.ipynb
+│   ├── 02_Penguin_Sub-001_TFR.ipynb
+│   ├── 03_Penguin_All-Sub_ERP.ipynb
+│   ├── 04_Penguin_All-Sub_ERP.ipynb
+│   └── 05_Penguin_Stat-Analysis.ipynb
 │
 ├── plots
 │
