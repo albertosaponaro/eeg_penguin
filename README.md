@@ -1,5 +1,8 @@
 # Penguin EEG Project
 
+#### Symmetry Perception by Alberto Saponaro (3422656) and Georgi Panayotov (3667327)
+
+
 ## Project Structure
 
 ```

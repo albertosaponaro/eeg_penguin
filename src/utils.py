@@ -69,16 +69,10 @@ def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=None, perfo
         tmax=tmax,
         baseline=baseline
     )
-
-    # Number of ICA components based on raw data rank
-    rank = mne.compute_rank(raw)['eeg']
     
-    # Initialize and fit ICA
-    # DOC: https://mne.tools/stable/auto_tutorials/preprocessing/40_artifact_correction_ica.html
+    # ICA
     if perform_ica: 
-        ica = mne.preprocessing.ICA(method="picard", n_components=rank)
-        ica.fit(raw, verbose=True)
-        raw = ica.apply(raw)
+        raw = ica(raw)
 
     # Remove trials if amplitude exceeds a certain threshold
     if reject_amp: 
@@ -87,6 +81,49 @@ def pipeline(raw, tmin=-1, tmax=1, baseline=(-0.2, 0.05), reject_amp=None, perfo
     return raw, epochs
 
 
+def ica(raw, n_componets=40, debug_logs=False, debug_images=False):
+    """
+    Perform Independent Component Analysis (ICA) on raw EEG data to remove artifacts.
+
+    Parameters:
+    -----------
+    raw : mne.io.Raw
+        The raw EEG data.
+    n_components : int, optional
+        Number of components to decompose the data into. Default is 40.
+    debug_logs : bool, optional
+        If True, print debugging logs. Default is False.
+    debug_images : bool, optional
+        If True, display debug images (e.g., component plots). Default is False.
+
+    Returns:
+    --------
+    raw : mne.io.Raw
+        The raw EEG data after ICA artifact removal.
+    """
+    
+    # Initialize ICA and fit it to the data
+    # ICA is stochastic, here we opt for the random seed 2
+    ica = mne.preprocessing.ICA(method = 'picard', n_components = n_componets, random_state = 2, verbose = debug_logs)
+    ica.fit(raw, verbose = debug_logs)
+    
+    # Sanity check
+    if debug_images: ica.plot_components()
+
+    # Find bad components
+    componnets1, scores1 = ica.find_bads_eog(raw, 'AFz', verbose = debug_logs)
+    componnets2, scores2 = ica.find_bads_muscle(raw, verbose = debug_logs)
+    
+    # Sanity check
+    if debug_images:
+        ica.plot_scores(scores1, componnets1)
+        ica.plot_scores(scores2, componnets2)
+
+    # Remove bad components
+    raw = ica.apply(raw, exclude = componnets1 + componnets2, verbose = debug_logs)
+    
+
+    return raw
 
 
 def perform_tfr(epochs):
